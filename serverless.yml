@@ -1,0 +1,29 @@
+service: nodejs-api-lambda
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  timeout: 15 # In seconds
+  memorySize: 512 # In MB
+  region: us-east-1
+  versionFunctions: false # If you want to turn off function versioning
+  stage: dev
+functions:
+  app:
+    handler: lambda.handler # Our handler function
+    events:
+      - http:
+          path: / # To endpoints on the / route
+          method: ANY
+          cors: true
+      - http: 
+          path: '/{proxy+}' # To endpoints on any routes
+          method: ANY
+          cors: true
+plugins:
+  - serverless-offline
+custom:
+  serverless-offline:
+    host: 0.0.0.0
+    httpPort: 5001
+    noPrependStageInUrl: true # So the stage won't be shown on the URL
